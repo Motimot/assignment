@@ -5,6 +5,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Header } from "./Header";
 import { FeautreCards } from "./FeautreCards";
 import { SideBar } from "./SideBar";
+import filterModes from "../consts/filterModes";
 
 const getAllVersions = (features) => {
   return features
@@ -18,10 +19,10 @@ const getFilteredFeatures = (allFeatures, filtering) => {
   return allFeatures.filter((o) =>
     Object.keys(filtering).every((key) => {
       return (
-        (filtering[key].mode === "freeText" &&
+        (filtering[key].mode === filterModes.FreeText &&
           o[key].includes(filtering[key].search)) ||
         filtering[key].search.length === 0 ||
-        (filtering[key].mode === "checkbox" &&
+        (filtering[key].mode === filterModes.Checkbox &&
           filtering[key].search.includes(o[key]))
       );
     })
@@ -31,10 +32,6 @@ const getFilteredFeatures = (allFeatures, filtering) => {
 const theme = createTheme({
   typography: {
     fontFamily: `"Open Sans", "Helvetica", "Arial", sans-serif`,
-    fontSize: 14,
-    fontWeightLight: 300,
-    fontWeightRegular: 400,
-    fontWeightMedium: 500,
   },
 });
 export default function HomePage() {
@@ -50,7 +47,7 @@ export default function HomePage() {
   const handleFreeSearchFiltering = (field, searchString) => {
     setFiltering({
       ...filtering,
-      [field]: { search: searchString, mode: "freeText" },
+      [field]: { search: searchString, mode: filterModes.FreeText },
     });
   };
 
@@ -59,14 +56,14 @@ export default function HomePage() {
     if (!currentFilter && checked) {
       setFiltering({
         ...filtering,
-        [field]: { search: [searchString], mode: "checkbox" },
+        [field]: { search: [searchString], mode: filterModes.Checkbox },
       });
     } else if (checked) {
       setFiltering({
         ...filtering,
         [field]: {
           search: [...currentFilter.search, searchString],
-          mode: "checkbox",
+          mode: filterModes.Checkbox,
         },
       });
     } else if (!checked) {
@@ -78,7 +75,7 @@ export default function HomePage() {
             ...currentFilter.search.slice(0, index),
             ...currentFilter.search.slice(index + 1),
           ],
-          mode: "checkbox",
+          mode: filterModes.Checkbox,
         },
       });
     }
